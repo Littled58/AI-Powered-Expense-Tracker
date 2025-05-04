@@ -15,77 +15,68 @@ import {ai} from '@/ai/ai-instance';
 import {z} from 'genkit';
 
 const SpendingInsightsInputSchema = z.object({
-  income: z.number().describe('The user\u0027s monthly income.'),
+  income: z.number().nullable().describe('The user\u0027s monthly income (or null if not set).'),
   expenses: z.array(
     z.object({
       category: z.string().describe('The category of the expense (e.g., food, transportation).'),
       amount: z.number().describe('The amount spent in that category.'),
     })
-  ).describe('A list of expenses with their categories and amounts.'),
-  budgetGoals: z.array(
-    z.object({
-      category: z.string().describe('The category of the budget goal (e.g., food, transportation).'),
-      amount: z.number().describe('The target budget amount for that category.'),
-    })
-  ).describe('A list of budget goals for each category.'),
+  ).describe('A list of expenses aggregated by category and their total amounts.'),
+  // Removed budgetGoals as it was causing issues and not essential for basic insights
+  // budgetGoals: z.array(
+  //   z.object({
+  //     category: z.string().describe('The category of the budget goal (e.g., food, transportation).'),
+  //     amount: z.number().describe('The target budget amount for that category.'),
+  //   })
+  // ).describe('A list of budget goals for each category.'),
 });
 export type SpendingInsightsInput = z.infer<typeof SpendingInsightsInputSchema>;
 
 const SpendingInsightsOutputSchema = z.object({
   insights: z.array(
-    z.string().describe('A list of personalized insights and tips based on spending habits.')
-  ).describe('AI generated financial insights and recommendations'),
+    z.string().describe('A personalized insight or tip based on spending habits.')
+  ).describe('A list (usually 2-4) of AI generated financial insights and recommendations.'),
 });
 export type SpendingInsightsOutput = z.infer<typeof SpendingInsightsOutputSchema>;
 
 export async function getSpendingInsights(input: SpendingInsightsInput): Promise<SpendingInsightsOutput> {
+  // Basic validation: Ensure income is provided and there are expenses to analyze
+  if (input.income === null || input.expenses.length === 0) {
+    return { insights: ["Provide income and add some expenses to get personalized insights."] };
+  }
   return spendingInsightsFlow(input);
 }
 
 const spendingInsightsPrompt = ai.definePrompt({
   name: 'spendingInsightsPrompt',
   input: {
-    schema: z.object({
-      income: z.number().describe('The user\u0027s monthly income.'),
-      expenses: z.array(
-        z.object({
-          category: z.string().describe('The category of the expense (e.g., food, transportation).'),
-          amount: z.number().describe('The amount spent in that category.'),
-        })
-      ).describe('A list of expenses with their categories and amounts.'),
-      budgetGoals: z.array(
-        z.object({
-          category: z.string().describe('The category of the budget goal (e.g., food, transportation).'),
-          amount: z.number().describe('The target budget amount for that category.'),
-        })
-      ).describe('A list of budget goals for each category.'),
-    }),
+    schema: SpendingInsightsInputSchema, // Use the updated schema without budgetGoals
   },
   output: {
-    schema: z.object({
-      insights: z.array(
-        z.string().describe('A list of personalized insights and tips based on spending habits.')
-      ).describe('AI generated financial insights and recommendations'),
-    }),
+    schema: SpendingInsightsOutputSchema,
   },
-  prompt: `You are a personal finance advisor. Analyze the user's spending habits and provide personalized insights and tips to optimize their savings.
+  prompt: `You are a helpful personal finance advisor AI. Analyze the user's aggregated spending habits based on their income and categorized expense totals. Provide 2-4 concise, actionable insights or tips to help the user understand their spending and potentially save money.
 
-Here is the user's financial information:
-
-Income: {{{income}}}
-Expenses:
+User's Financial Information:
+Income: {{#if income}}{{income}}{{else}}Not provided{{/if}}
+Aggregated Expenses (Category Totals):
 {{#each expenses}}
-  - Category: {{{category}}}, Amount: {{{amount}}}
+  - Category: {{{category}}}, Total Amount: {{{amount}}}
 {{/each}}
-Budget Goals:
+{{!-- Removed Budget Goals section --}}
+{{!-- Budget Goals:
 {{#each budgetGoals}}
   - Category: {{{category}}}, Amount: {{{amount}}}
-{{/each}}
+{{/each}} --}}
 
-Provide a list of insights and tips to help the user save money and achieve their budget goals. Be specific and actionable.
+Instructions:
+- Focus on the relationship between income and expenses.
+- Identify the highest spending categories.
+- Provide practical, personalized tips based *only* on the provided data. For example, if 'Dining Out' is high, suggest cooking more. If 'Transportation' is high, suggest alternatives if applicable.
+- Frame insights positively or neutrally where possible.
+- Keep the insights brief and easy to understand.
 
-Your output should be an array of strings.
-`,
+Return the insights as an array of strings in the 'insights' field.`,
 });
 
 const spendingInsightsFlow = ai.defineFlow<
@@ -97,8 +88,16 @@ const spendingInsightsFlow = ai.defineFlow<
     inputSchema: SpendingInsightsInputSchema,
     outputSchema: SpendingInsightsOutputSchema,
   },
-  async input => {
-    const {output} = await spendingInsightsPrompt(input);
-    return output!;
+  async (input) => {
+     try {
+      const { output } = await spendingInsightsPrompt(input);
+      // Ensure output is not null and insights array exists
+      return output || { insights: ["Could not generate insights at this time."] };
+    } catch (error) {
+        console.error("Error in spendingInsightsFlow:", error);
+        // Provide a more specific error message if possible, otherwise generic
+        const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
+        return { insights: [`Failed to generate insights due to an error: ${errorMessage}`] };
+    }
   }
 );

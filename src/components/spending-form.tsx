@@ -1,3 +1,4 @@
+
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -73,14 +74,16 @@ export function SpendingForm({ onAddExpense, onSetIncome, onUpdateExpense, curre
   async function onIncomeSubmit(values: z.infer<typeof incomeFormSchema>) {
     setIsSubmittingIncome(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate async operation
+      // Simulate async operation if needed, otherwise remove
+      // await new Promise((resolve) => setTimeout(resolve, 100));
       onSetIncome(values.income);
       toast({
         title: "Success!",
         description: "Income updated successfully.",
       });
-      router.refresh(); // Refresh route if needed, though state handled locally
+      // router.refresh(); // Usually not needed if parent state updates UI
     } catch (error) {
+       console.error("Failed to update income:", error);
        toast({
         title: "Error",
         description: "Failed to update income.",
@@ -94,40 +97,40 @@ export function SpendingForm({ onAddExpense, onSetIncome, onUpdateExpense, curre
   async function onExpenseSubmit(values: z.infer<typeof expenseFormSchema>) {
     setIsSubmittingExpense(true);
     const newExpenseBase = {
-      id: Date.now().toString(), // Temporary ID
+      id: Date.now().toString(), // Temporary ID, ideally use UUID later
       description: values.description,
       amount: values.amount,
       category: null, // Start with null category
       date: new Date(),
     };
 
-    // Add expense optimistically with null category
+    // Add expense optimistically with null category first
     onAddExpense(newExpenseBase);
-    expenseForm.reset(); // Reset form after adding
+    expenseForm.reset(); // Reset form immediately
 
     try {
       // Call AI to categorize
       const result = await categorizeExpense({ description: values.description });
       const categorizedExpense: Expense = {
          ...newExpenseBase,
-         category: result.category,
+         category: result.category || "Other", // Fallback to 'Other' if AI returns null/empty
       };
        // Update the expense in the parent state with the AI category
        onUpdateExpense(categorizedExpense);
 
       toast({
         title: "Expense Added",
-        description: `Categorized as: ${result.category || 'Uncategorized'}.`,
+        description: `Auto-categorized as: ${categorizedExpense.category}.`,
       });
-      // router.refresh(); // Refresh may not be needed if parent state updates UI
+
     } catch (error) {
-      console.error("Failed to categorize expense:", error);
-       // Keep the expense, but show error about categorization
-       onUpdateExpense({ ...newExpenseBase, category: 'Uncategorized (AI Error)' });
+      console.error("Failed to categorize expense via AI:", error); // Log the actual error
+       // Update expense with a default category if AI fails
+       onUpdateExpense({ ...newExpenseBase, category: 'Uncategorized' });
       toast({
-        title: "Categorization Error",
-        description: "Could not automatically categorize the expense.",
-        variant: "destructive",
+        title: "Categorization Issue",
+        description: "Could not auto-categorize. Set to 'Uncategorized'.",
+        variant: "destructive", // Use default or warning variant? default might be less alarming
       });
     } finally {
       setIsSubmittingExpense(false);
@@ -182,7 +185,7 @@ export function SpendingForm({ onAddExpense, onSetIncome, onUpdateExpense, curre
                   <Input placeholder="e.g., Groceries, Coffee, Train ticket" {...field} />
                 </FormControl>
                  <FormDescription>
-                  Describe the expense. AI will categorize it.
+                  Describe the expense. AI will attempt to categorize it.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -213,3 +216,4 @@ export function SpendingForm({ onAddExpense, onSetIncome, onUpdateExpense, curre
     </div>
   );
 }
+

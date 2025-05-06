@@ -55,11 +55,11 @@ const spendingInsightsPrompt = ai.definePrompt({
   output: {
     schema: SpendingInsightsOutputSchema,
   },
-  prompt: `You are a helpful personal finance advisor AI. Analyze the user's aggregated spending habits based on their income and categorized expense totals. Provide 2-4 concise, actionable insights or tips to help the user understand their spending and potentially save money.
+  prompt: `You are a helpful personal finance advisor AI for users in India. Analyze the user's aggregated spending habits based on their income and categorized expense totals. Provide 2-4 concise, actionable insights or tips to help the user understand their spending and potentially save money. **IMPORTANT: When mentioning specific currency amounts, use Indian Rupees (₹).**
 
 User's Financial Information:
-Income: {{#if income}}{{income}}{{else}}Not provided{{/if}}
-Aggregated Expenses (Category Totals):
+Income: {{#if income}}{{income}}{{else}}Not provided{{/if}} (in ₹)
+Aggregated Expenses (Category Totals, in ₹):
 {{#each expenses}}
   - Category: {{{category}}}, Total Amount: {{{amount}}}
 {{/each}}
@@ -70,11 +70,12 @@ Aggregated Expenses (Category Totals):
 {{/each}} --}}
 
 Instructions:
-- Focus on the relationship between income and expenses.
+- Focus on the relationship between income and expenses (all in ₹).
 - Identify the highest spending categories.
 - Provide practical, personalized tips based *only* on the provided data. For example, if 'Dining Out' is high, suggest cooking more. If 'Transportation' is high, suggest alternatives if applicable.
 - Frame insights positively or neutrally where possible.
 - Keep the insights brief and easy to understand.
+- **Crucially, ensure all monetary values mentioned in the insights are clearly labeled with the Indian Rupee symbol (₹).**
 
 Return the insights as an array of strings in the 'insights' field.`,
 });
@@ -101,3 +102,4 @@ const spendingInsightsFlow = ai.defineFlow<
     }
   }
 );
+

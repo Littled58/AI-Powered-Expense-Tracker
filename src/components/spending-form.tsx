@@ -50,7 +50,7 @@ export function SpendingForm({ onAddExpense, onSetIncome, onUpdateExpense, curre
   const incomeForm = useForm<z.infer<typeof incomeFormSchema>>({
     resolver: zodResolver(incomeFormSchema),
     defaultValues: {
-      income: currentIncome || 0,
+      income: currentIncome ?? 10000, // Set default to 10000 if currentIncome is null/undefined
     },
   });
 
@@ -68,6 +68,8 @@ export function SpendingForm({ onAddExpense, onSetIncome, onUpdateExpense, curre
     if (currentIncome !== null) {
       incomeForm.reset({ income: currentIncome });
     }
+    // If currentIncome becomes null, the form retains the last value,
+    // or the initial default (10000) if it was null initially.
   }, [currentIncome, incomeForm]);
 
 
@@ -113,7 +115,7 @@ export function SpendingForm({ onAddExpense, onSetIncome, onUpdateExpense, curre
       const result = await categorizeExpense({ description: values.description });
       const categorizedExpense: Expense = {
          ...newExpenseBase,
-         category: result.category || "Other", // Fallback to 'Other' if AI returns null/empty
+         category: result?.category || "Other", // Fallback to 'Other' if AI returns null/empty or undefined category
       };
        // Update the expense in the parent state with the AI category
        onUpdateExpense(categorizedExpense);

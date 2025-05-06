@@ -1,4 +1,3 @@
-
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,6 +21,7 @@ import { toast } from "@/hooks/use-toast";
 import { Icons } from "./icons";
 import type { Expense } from "@/types/expense";
 import { categorizeExpense } from "@/ai/flows/categorize-expense"; // Import the new AI flow
+import { Separator } from "@/components/ui/separator"; // Import Separator
 
 // Schema for the income form part
 const incomeFormSchema = z.object({
@@ -50,7 +50,7 @@ export function SpendingForm({ onAddExpense, onSetIncome, onUpdateExpense, curre
   const incomeForm = useForm<z.infer<typeof incomeFormSchema>>({
     resolver: zodResolver(incomeFormSchema),
     defaultValues: {
-      income: currentIncome ?? 10000, // Set default to 10000 if currentIncome is null/undefined
+      income: 10000, // Set default to 10000 if currentIncome is null/undefined
     },
   });
 
@@ -65,25 +65,23 @@ export function SpendingForm({ onAddExpense, onSetIncome, onUpdateExpense, curre
 
    // Update income form default value when currentIncome prop changes
    useEffect(() => {
-    if (currentIncome !== null) {
+    if (currentIncome !== null && currentIncome !== undefined) {
       incomeForm.reset({ income: currentIncome });
+    } else {
+      // Optionally reset to a default or leave as is when income becomes null
+      // incomeForm.reset({ income: 10000 }); // Uncomment to reset to default
     }
-    // If currentIncome becomes null, the form retains the last value,
-    // or the initial default (10000) if it was null initially.
   }, [currentIncome, incomeForm]);
 
 
   async function onIncomeSubmit(values: z.infer<typeof incomeFormSchema>) {
     setIsSubmittingIncome(true);
     try {
-      // Simulate async operation if needed, otherwise remove
-      // await new Promise((resolve) => setTimeout(resolve, 100));
       onSetIncome(values.income);
       toast({
         title: "Success!",
         description: "Income updated successfully.",
       });
-      // router.refresh(); // Usually not needed if parent state updates UI
     } catch (error) {
        console.error("Failed to update income:", error);
        toast({
@@ -143,19 +141,19 @@ export function SpendingForm({ onAddExpense, onSetIncome, onUpdateExpense, curre
     <div className="space-y-8">
        {/* Income Form */}
       <Form {...incomeForm}>
-        <form onSubmit={incomeForm.handleSubmit(onIncomeSubmit)} className="space-y-4">
-          <h2 className="text-xl font-semibold mb-4">Manage Income</h2>
+        <form onSubmit={incomeForm.handleSubmit(onIncomeSubmit)} className="space-y-6"> {/* Increased space */}
+          <h2 className="text-xl font-semibold mb-4 text-primary">Manage Income</h2> {/* Use primary color */}
           <FormField
             control={incomeForm.control}
             name="income"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Monthly Income</FormLabel>
+                <FormLabel>Monthly Income (₹)</FormLabel> {/* Added currency symbol */}
                 <FormControl>
                   <Input type="number" placeholder="Enter your monthly income" {...field} />
                 </FormControl>
                 <FormDescription>
-                  Set your total monthly income.
+                  Set your total monthly income in Indian Rupees.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -170,13 +168,13 @@ export function SpendingForm({ onAddExpense, onSetIncome, onUpdateExpense, curre
         </form>
       </Form>
 
-       <hr className="my-8 border-border" />
+       <Separator className="my-8" /> {/* Use Separator component */}
 
 
       {/* Expense Form */}
       <Form {...expenseForm}>
-        <form onSubmit={expenseForm.handleSubmit(onExpenseSubmit)} className="space-y-4">
-          <h2 className="text-xl font-semibold mb-4">Add Expense</h2>
+        <form onSubmit={expenseForm.handleSubmit(onExpenseSubmit)} className="space-y-6"> {/* Increased space */}
+          <h2 className="text-xl font-semibold mb-4 text-primary">Add Expense</h2> {/* Use primary color */}
            <FormField
             control={expenseForm.control}
             name="description"
@@ -198,7 +196,7 @@ export function SpendingForm({ onAddExpense, onSetIncome, onUpdateExpense, curre
             name="amount"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Amount</FormLabel>
+                <FormLabel>Amount (₹)</FormLabel> {/* Added currency symbol */}
                 <FormControl>
                   <Input type="number" step="0.01" placeholder="Enter amount spent" {...field} />
                 </FormControl>
@@ -218,4 +216,3 @@ export function SpendingForm({ onAddExpense, onSetIncome, onUpdateExpense, curre
     </div>
   );
 }
-

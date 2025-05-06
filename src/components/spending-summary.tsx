@@ -121,13 +121,13 @@ export function SpendingSummary({ income, expenses, onDeleteExpense }: SpendingS
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold mb-4 text-center">Spending Overview</h2>
+      <h2 className="text-2xl font-semibold mb-4 text-primary">Spending Overview</h2>
 
        {/* Key Metrics Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-         <Card>
+         <Card className="shadow-sm border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Income</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Total Income</CardTitle> {/* Adjusted text size and color */}
              <Icons.dollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -137,9 +137,9 @@ export function SpendingSummary({ income, expenses, onDeleteExpense }: SpendingS
              </p>
           </CardContent>
         </Card>
-         <Card>
+         <Card className="shadow-sm border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Expenses</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Total Expenses</CardTitle> {/* Adjusted text size and color */}
              <Icons.creditCard className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -149,9 +149,9 @@ export function SpendingSummary({ income, expenses, onDeleteExpense }: SpendingS
             </p>
           </CardContent>
         </Card>
-         <Card>
+         <Card className="shadow-sm border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Savings</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Savings</CardTitle> {/* Adjusted text size and color */}
              <Icons.piggyBank className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -166,9 +166,9 @@ export function SpendingSummary({ income, expenses, onDeleteExpense }: SpendingS
       </div>
 
       {/* Expense List */}
-       <Card>
+       <Card className="shadow-sm border">
          <CardHeader>
-            <CardTitle>Recent Expenses</CardTitle>
+            <CardTitle className="text-xl font-semibold text-primary">Recent Expenses</CardTitle> {/* Adjusted styling */}
              <CardDescription>Your recorded expense entries.</CardDescription>
          </CardHeader>
          <CardContent>
@@ -217,9 +217,9 @@ export function SpendingSummary({ income, expenses, onDeleteExpense }: SpendingS
 
       {/* Spending Chart */}
        {summaryData.length > 0 ? ( // Use summaryData to check if chart should render
-         <Card>
+         <Card className="shadow-sm border">
             <CardHeader>
-              <CardTitle>Expenses by Category</CardTitle>
+              <CardTitle className="text-xl font-semibold text-primary">Expenses by Category</CardTitle> {/* Adjusted styling */}
               <CardDescription>Visual breakdown of your spending.</CardDescription>
             </CardHeader>
            <CardContent>
@@ -243,7 +243,7 @@ export function SpendingSummary({ income, expenses, onDeleteExpense }: SpendingS
                     formatter={(value: number) => formatCurrency(value)}
                     cursor={{ fill: 'hsl(var(--muted))' }} // Add cursor highlight
                   />
-                 <Legend />
+                 <Legend wrapperStyle={{ fontSize: '12px' }} /> {/* Adjusted legend style */}
                  <Bar dataKey="amount" fill="hsl(var(--primary))" name="Amount Spent" radius={[0, 4, 4, 0]} /> {/* Add radius */}
                </BarChart>
              </ResponsiveContainer>
@@ -254,9 +254,9 @@ export function SpendingSummary({ income, expenses, onDeleteExpense }: SpendingS
       )}
 
       {/* AI Insights Section */}
-      <Card>
+      <Card className="shadow-sm border">
          <CardHeader>
-            <CardTitle>AI Financial Insights</CardTitle>
+            <CardTitle className="text-xl font-semibold text-primary">AI Financial Insights</CardTitle> {/* Adjusted styling */}
              <CardDescription>Personalized tips based on your data.</CardDescription>
          </CardHeader>
         <CardContent>

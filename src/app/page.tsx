@@ -44,14 +44,14 @@ export default function Home() {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold text-center text-primary">TrackWise</h1>
-        <p className="text-center text-muted-foreground">Your AI-Powered Spending Tracker</p>
+    <div className="container mx-auto px-4 py-8 md:py-12"> {/* Increased vertical padding */}
+      <header className="mb-12"> {/* Increased bottom margin */}
+        <h1 className="text-4xl font-bold text-center text-primary">TrackWise</h1> {/* Increased text size */}
+        <p className="text-center text-muted-foreground mt-2">Your AI-Powered Spending Tracker</p>
       </header>
 
       {/* Input Section */}
-      <div className="bg-card border rounded-lg p-6 shadow mb-8">
+      <div className="bg-card border rounded-lg p-6 shadow-md mb-10"> {/* Added shadow-md, increased bottom margin */}
          <SpendingForm
              onAddExpense={handleAddExpense}
              onSetIncome={handleSetIncome}
@@ -62,16 +62,16 @@ export default function Home() {
 
       {/* Tabs for Different Views */}
        <Tabs defaultValue="summary" className="w-full">
-         <TabsList className="grid w-full grid-cols-4 mb-4"> {/* Adjust grid-cols based on number of tabs */}
-           <TabsTrigger value="summary">Summary</TabsTrigger>
-           <TabsTrigger value="patterns">Patterns</TabsTrigger>
-           <TabsTrigger value="prediction">Prediction</TabsTrigger>
-           <TabsTrigger value="chatbot">Assistant</TabsTrigger>
+         <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 mb-6 bg-muted/60 p-1.5 rounded-lg"> {/* Adjusted grid-cols, spacing, background */}
+           <TabsTrigger value="summary" className="text-sm font-medium">Summary</TabsTrigger>
+           <TabsTrigger value="patterns" className="text-sm font-medium">Patterns</TabsTrigger>
+           <TabsTrigger value="prediction" className="text-sm font-medium">Prediction</TabsTrigger>
+           <TabsTrigger value="chatbot" className="text-sm font-medium">Assistant</TabsTrigger>
          </TabsList>
 
          {/* Tab Content */}
          <TabsContent value="summary">
-           <div className="bg-card border rounded-lg p-6 shadow">
+           <div className="bg-card border rounded-lg p-6 shadow-md"> {/* Added shadow-md */}
              <SpendingSummary
                 income={income}
                 expenses={expenses}
@@ -80,17 +80,17 @@ export default function Home() {
            </div>
          </TabsContent>
          <TabsContent value="patterns">
-           <div className="bg-card border rounded-lg p-6 shadow">
+           <div className="bg-card border rounded-lg p-6 shadow-md"> {/* Added shadow-md */}
              <SpendingPatterns expenses={expenses} />
            </div>
          </TabsContent>
           <TabsContent value="prediction">
-           <div className="bg-card border rounded-lg p-6 shadow">
+           <div className="bg-card border rounded-lg p-6 shadow-md"> {/* Added shadow-md */}
               <BudgetPrediction expenses={expenses} />
            </div>
          </TabsContent>
           <TabsContent value="chatbot">
-           <div className="bg-card border rounded-lg p-6 shadow">
+           <div className="bg-card border rounded-lg p-6 shadow-md"> {/* Added shadow-md */}
               <FinanceChatbot income={income} expenses={expenses} />
            </div>
          </TabsContent>

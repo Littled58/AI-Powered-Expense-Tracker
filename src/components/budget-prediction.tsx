@@ -8,6 +8,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Icons } from "./icons";
 import { Skeleton } from './ui/skeleton';
 import { formatCurrency } from '@/lib/utils'; // Assuming you have this helper
+import { Badge } from '@/components/ui/badge'; // Import Badge
 
 interface BudgetPredictionProps {
   expenses: Expense[];
@@ -65,11 +66,11 @@ export function BudgetPrediction({ expenses }: BudgetPredictionProps) {
   }, [expenses, predictionPeriod]); // Re-run when expenses or period change
 
   return (
-    <Card>
+    <Card className="shadow-sm border"> {/* Added border/shadow */}
       <CardHeader>
         <div className="flex justify-between items-center">
              <div>
-                <CardTitle>Budget Prediction</CardTitle>
+                <CardTitle className="text-xl font-semibold text-primary">Budget Prediction</CardTitle> {/* Adjusted styling */}
                 <CardDescription>AI forecast for your spending ({predictionPeriod}).</CardDescription>
                  {/* TODO: Add dropdown/selector to change predictionPeriod */}
              </div>
@@ -78,7 +79,7 @@ export function BudgetPrediction({ expenses }: BudgetPredictionProps) {
       </CardHeader>
       <CardContent>
         {isLoading ? (
-          <div className="space-y-4">
+          <div className="space-y-4 py-4"> {/* Added padding */}
              <div className='flex items-center space-x-2'>
                  <Skeleton className="h-6 w-24" />
                  <Skeleton className="h-4 w-32" />
@@ -94,35 +95,44 @@ export function BudgetPrediction({ expenses }: BudgetPredictionProps) {
           </Alert>
         ) : prediction ? (
           <div className="space-y-4">
-            <div>
-              <p className="text-lg font-semibold">Predicted Total Spending:</p>
-              <p className="text-2xl font-bold text-primary">{formatCurrency(prediction.predictedTotalSpending)}</p>
+            <div className="p-4 bg-muted/50 rounded-lg"> {/* Added background */}
+              <p className="text-sm font-medium text-muted-foreground">Predicted Total Spending:</p>
+              <p className="text-3xl font-bold text-primary">{formatCurrency(prediction.predictedTotalSpending)}</p> {/* Increased size */}
               {prediction.confidenceNote && (
-                <p className="text-xs text-muted-foreground mt-1">{prediction.confidenceNote}</p>
+                <Badge variant="secondary" className="mt-2 text-xs">{prediction.confidenceNote}</Badge>
               )}
             </div>
 
             {prediction.categoryPredictions && prediction.categoryPredictions.length > 0 && (
               <div>
-                <p className="font-semibold mb-2">Predicted Spending by Category:</p>
-                <ul className="space-y-1 list-disc pl-5 text-sm">
+                <p className="font-semibold mb-2 text-muted-foreground">Predicted Spending by Category:</p>
+                <ul className="space-y-1 text-sm">
                   {prediction.categoryPredictions
                      .sort((a, b) => b.predictedAmount - a.predictedAmount) // Sort descending
                      .map((catPred) => (
-                    <li key={catPred.category}>
-                      <span className="font-medium">{catPred.category}:</span> {formatCurrency(catPred.predictedAmount)}
+                    <li key={catPred.category} className="flex justify-between items-center py-1 border-b last:border-none">
+                      <span className="font-medium">{catPred.category}</span>
+                       <span className="font-semibold">{formatCurrency(catPred.predictedAmount)}</span>
                     </li>
                   ))}
                 </ul>
               </div>
             )}
+             {prediction.predictedTotalSpending === 0 && !prediction.confidenceNote?.includes("Insufficient data") && (
+                <p className="text-sm text-muted-foreground text-center pt-4">
+                    Prediction might be zero due to limited or inconsistent historical data.
+                </p>
+             )}
           </div>
         ) : (
-          <p className="text-sm text-muted-foreground">
-            {expenses.length < 10
-              ? 'Add more expenses (at least 10) for budget prediction.'
-              : 'Prediction data is not available.'}
-          </p>
+          <div className="text-center py-6"> {/* Centered placeholder */}
+             <Icons.piggyBank className="h-10 w-10 text-muted-foreground mx-auto mb-2"/>
+             <p className="text-sm text-muted-foreground">
+                 {expenses.length < 10
+                 ? 'Add more expenses (at least 10) for budget prediction.'
+                 : 'Prediction data is not available or cannot be generated.'}
+             </p>
+          </div>
         )}
       </CardContent>
     </Card>

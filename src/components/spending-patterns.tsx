@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Icons } from "./icons";
 import { Skeleton } from './ui/skeleton'; // Import Skeleton
+import { Badge } from '@/components/ui/badge'; // Import Badge
 
 interface SpendingPatternsProps {
   expenses: Expense[];
@@ -58,14 +59,14 @@ export function SpendingPatterns({ expenses }: SpendingPatternsProps) {
   }, [expenses]); // Re-run when expenses change
 
   return (
-    <Card>
+    <Card className="shadow-sm border"> {/* Added border/shadow */}
       <CardHeader>
-        <CardTitle>Spending Patterns Analysis</CardTitle>
+        <CardTitle className="text-xl font-semibold text-primary">Spending Patterns Analysis</CardTitle> {/* Adjusted styling */}
         <CardDescription>AI-detected trends in your spending habits.</CardDescription>
       </CardHeader>
       <CardContent>
         {isLoading ? (
-          <div className="space-y-3">
+          <div className="space-y-3 py-4"> {/* Added padding */}
             <Skeleton className="h-4 w-3/4" />
             <Skeleton className="h-4 w-full" />
             <Skeleton className="h-4 w-5/6" />
@@ -77,17 +78,23 @@ export function SpendingPatterns({ expenses }: SpendingPatternsProps) {
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         ) : patterns.length > 0 ? (
-          <ul className="space-y-2 list-disc pl-5 text-sm">
+          <ul className="space-y-3 text-sm"> {/* Increased spacing */}
             {patterns.map((pattern, index) => (
-              <li key={index}>{pattern}</li>
+              <li key={index} className="flex items-start gap-2">
+                 <Icons.info className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" /> {/* Added icon */}
+                <span>{pattern}</span>
+              </li>
             ))}
           </ul>
         ) : (
-          <p className="text-sm text-muted-foreground">
-            {expenses.length < 5
-              ? 'Add more expenses (at least 5) for pattern analysis.'
-              : 'No specific spending patterns detected yet.'}
-          </p>
+          <div className="text-center py-6"> {/* Centered placeholder */}
+            <Icons.search className="h-10 w-10 text-muted-foreground mx-auto mb-2"/>
+            <p className="text-sm text-muted-foreground">
+              {expenses.length < 5
+                ? 'Add more expenses (at least 5) for pattern analysis.'
+                : 'No specific spending patterns detected yet.'}
+            </p>
+         </div>
         )}
       </CardContent>
     </Card>

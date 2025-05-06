@@ -82,39 +82,39 @@ export function FinanceChatbot({ expenses, income }: FinanceChatbotProps) {
 
 
   return (
-    <Card className="h-[500px] flex flex-col"> {/* Set a fixed height */}
-      <CardHeader>
-        <CardTitle>AI Finance Assistant</CardTitle>
+    <Card className="h-[550px] flex flex-col shadow-sm border"> {/* Increased height, added border/shadow */}
+      <CardHeader className="border-b pb-4"> {/* Added border */}
+        <CardTitle className="text-xl font-semibold text-primary">AI Finance Assistant</CardTitle> {/* Adjusted styling */}
         <CardDescription>Ask questions about your spending.</CardDescription>
       </CardHeader>
-      <CardContent className="flex-grow overflow-hidden flex flex-col"> {/* Allow content to grow and enable scrolling */}
-         <ScrollArea className="flex-grow mb-4 pr-4" ref={scrollAreaRef}> {/* ScrollArea takes available space */}
-           <div className="space-y-4">
+      <CardContent className="flex-grow overflow-hidden flex flex-col pt-6"> {/* Added top padding */}
+         <ScrollArea className="flex-grow mb-4 pr-4 -mr-4" ref={scrollAreaRef}> {/* Adjusted padding/margin for scrollbar */}
+           <div className="space-y-4 pr-4"> {/* Added padding to prevent content clipping */}
              {messages.map((message, index) => (
                <div key={index} className={`flex items-start gap-3 ${message.role === 'user' ? 'justify-end' : ''}`}>
                  {message.role === 'bot' && (
-                   <Avatar className="h-8 w-8">
+                   <Avatar className="h-8 w-8 border border-muted"> {/* Added border */}
                      {/* Add a placeholder or actual image for the bot */}
-                     <AvatarFallback>AI</AvatarFallback>
+                     <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">AI</AvatarFallback> {/* Styled fallback */}
                    </Avatar>
                  )}
-                 <div className={`rounded-lg p-3 max-w-[75%] text-sm ${message.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
+                 <div className={`rounded-lg p-3 max-w-[80%] text-sm shadow-sm ${message.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}> {/* Added shadow */}
                    {message.content}
                  </div>
                   {message.role === 'user' && (
-                   <Avatar className="h-8 w-8">
+                   <Avatar className="h-8 w-8 border border-muted"> {/* Added border */}
                      {/* Add a placeholder or actual image for the user */}
-                     <AvatarFallback>U</AvatarFallback>
+                     <AvatarFallback className="bg-secondary text-secondary-foreground text-xs font-semibold">U</AvatarFallback> {/* Styled fallback */}
                    </Avatar>
                  )}
                </div>
              ))}
               {isLoading && (
                  <div className="flex items-start gap-3">
-                    <Avatar className="h-8 w-8">
-                     <AvatarFallback>AI</AvatarFallback>
+                    <Avatar className="h-8 w-8 border border-muted">
+                     <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">AI</AvatarFallback>
                    </Avatar>
-                    <div className="rounded-lg p-3 bg-muted max-w-[75%] text-sm flex items-center space-x-2">
+                    <div className="rounded-lg p-3 bg-muted max-w-[75%] text-sm flex items-center space-x-2 shadow-sm"> {/* Added shadow */}
                        <Icons.spinner className="h-4 w-4 animate-spin" />
                        <span>Thinking...</span>
                     </div>
@@ -128,10 +128,10 @@ export function FinanceChatbot({ expenses, income }: FinanceChatbotProps) {
             onChange={(e) => setInputValue(e.target.value)}
             placeholder="Ask something..."
             disabled={isLoading}
-            className="flex-grow"
+            className="flex-grow rounded-full px-4" /* Rounded input */
           />
-          <Button type="submit" disabled={isLoading || !inputValue.trim()}>
-            {isLoading ? <Icons.spinner className="h-4 w-4 animate-spin" /> : 'Send'}
+          <Button type="submit" disabled={isLoading || !inputValue.trim()} className="rounded-full"> {/* Rounded button */}
+            {isLoading ? <Icons.spinner className="h-4 w-4 animate-spin" /> : <Icons.arrowRight className="h-4 w-4"/>}
           </Button>
          </form>
       </CardContent>

@@ -1,13 +1,15 @@
+
 "use client";
 
 import { useState } from "react";
 import { SpendingForm } from '@/components/spending-form';
 import { SpendingSummary } from '@/components/spending-summary';
-import { SpendingPatterns } from '@/components/spending-patterns'; // New component
-import { BudgetPrediction } from '@/components/budget-prediction'; // New component
-import { FinanceChatbot } from '@/components/finance-chatbot'; // New component
+import { SpendingPatterns } from '@/components/spending-patterns';
+import { BudgetPrediction } from '@/components/budget-prediction';
+import { FinanceChatbot } from '@/components/finance-chatbot';
 import type { Expense } from "@/types/expense";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"; // Import Tabs
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Wallet, ListChecks, TrendingUp, Brain, Bot } from "lucide-react"; // Import icons
 
 export default function Home() {
   const [income, setIncome] = useState<number | null>(null);
@@ -36,7 +38,6 @@ export default function Home() {
     setExpenses((prevExpenses) =>
       prevExpenses.filter((exp) => exp.id !== expenseId)
     );
-    // Optionally add a toast notification for deletion
   };
 
   const handleSetIncome = (newIncome: number) => {
@@ -44,14 +45,17 @@ export default function Home() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 md:py-12"> {/* Increased vertical padding */}
-      <header className="mb-12"> {/* Increased bottom margin */}
-        <h1 className="text-4xl font-bold text-center text-primary">TrackWise</h1> {/* Increased text size */}
-        <p className="text-center text-muted-foreground mt-2">Your AI-Powered Spending Tracker</p>
+    <div className="container mx-auto px-4 py-8 md:py-12"> {/* Removed bg-background, body has gradient now */}
+      <header className="mb-12 text-center">
+        <div className="flex items-center justify-center gap-3 mb-2">
+          <Wallet className="h-10 w-10 text-primary" data-ai-hint="logo finance" />
+          <h1 className="text-4xl font-bold text-primary">TrackWise</h1>
+        </div>
+        <p className="text-muted-foreground">Your AI-Powered Spending Tracker</p>
       </header>
 
       {/* Input Section */}
-      <div className="bg-card border rounded-lg p-6 shadow-md mb-10"> {/* Added shadow-md, increased bottom margin */}
+      <div className="bg-card border rounded-lg p-6 shadow-md mb-10">
          <SpendingForm
              onAddExpense={handleAddExpense}
              onSetIncome={handleSetIncome}
@@ -62,35 +66,43 @@ export default function Home() {
 
       {/* Tabs for Different Views */}
        <Tabs defaultValue="summary" className="w-full">
-         <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 mb-6 bg-muted/60 p-1.5 rounded-lg"> {/* Adjusted grid-cols, spacing, background */}
-           <TabsTrigger value="summary" className="text-sm font-medium">Summary</TabsTrigger>
-           <TabsTrigger value="patterns" className="text-sm font-medium">Patterns</TabsTrigger>
-           <TabsTrigger value="prediction" className="text-sm font-medium">Prediction</TabsTrigger>
-           <TabsTrigger value="chatbot" className="text-sm font-medium">Assistant</TabsTrigger>
+         <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 mb-6 bg-muted/60 p-1.5 rounded-lg">
+           <TabsTrigger value="summary" className="text-sm font-medium flex items-center justify-center gap-2">
+             <ListChecks className="h-4 w-4" /> Summary
+           </TabsTrigger>
+           <TabsTrigger value="patterns" className="text-sm font-medium flex items-center justify-center gap-2">
+             <TrendingUp className="h-4 w-4" /> Patterns
+           </TabsTrigger>
+           <TabsTrigger value="prediction" className="text-sm font-medium flex items-center justify-center gap-2">
+             <Brain className="h-4 w-4" /> Prediction
+           </TabsTrigger>
+           <TabsTrigger value="chatbot" className="text-sm font-medium flex items-center justify-center gap-2">
+             <Bot className="h-4 w-4" /> Assistant
+           </TabsTrigger>
          </TabsList>
 
          {/* Tab Content */}
          <TabsContent value="summary">
-           <div className="bg-card border rounded-lg p-6 shadow-md"> {/* Added shadow-md */}
+           <div className="bg-card border rounded-lg p-6 shadow-md">
              <SpendingSummary
                 income={income}
                 expenses={expenses}
-                onDeleteExpense={handleDeleteExpense} // Pass delete handler
+                onDeleteExpense={handleDeleteExpense}
              />
            </div>
          </TabsContent>
          <TabsContent value="patterns">
-           <div className="bg-card border rounded-lg p-6 shadow-md"> {/* Added shadow-md */}
+           <div className="bg-card border rounded-lg p-6 shadow-md">
              <SpendingPatterns expenses={expenses} />
            </div>
          </TabsContent>
           <TabsContent value="prediction">
-           <div className="bg-card border rounded-lg p-6 shadow-md"> {/* Added shadow-md */}
+           <div className="bg-card border rounded-lg p-6 shadow-md">
               <BudgetPrediction expenses={expenses} />
            </div>
          </TabsContent>
           <TabsContent value="chatbot">
-           <div className="bg-card border rounded-lg p-6 shadow-md"> {/* Added shadow-md */}
+           <div className="bg-card border rounded-lg p-6 shadow-md">
               <FinanceChatbot income={income} expenses={expenses} />
            </div>
          </TabsContent>

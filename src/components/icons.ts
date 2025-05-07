@@ -1,27 +1,30 @@
-import {ArrowRight, Check, ChevronsUpDown, Circle, Copy, CreditCard, DollarSign, Edit, ExternalLink, File, HelpCircle, Home, Info, Loader2, Mail, MessageSquare, Moon, PiggyBank, Plus, PlusCircle, Search, Server, Settings, Share2, Shield, Sun, Trash, User, X, Workflow, AlertTriangle } from 'lucide-react'; // Added CreditCard, DollarSign, PiggyBank, Info, AlertTriangle
+import {ArrowRight, Check, ChevronsUpDown, Circle, Copy, CreditCard, DollarSign, Edit, ExternalLink, File, HelpCircle, Home, Info, Loader2, Mail, MessageSquare, Moon, PiggyBank, Plus, PlusCircle, Search, Server, Settings, Share2, Shield, Sun, Trash, User, Workflow, AlertTriangle, Wallet, ListChecks, TrendingUp, Brain, Bot, X } from 'lucide-react'; // Added X
 
 const Icons = {
-  alertTriangle: AlertTriangle, // Added
+  alertTriangle: AlertTriangle,
   arrowRight: ArrowRight,
+  bot: Bot,
+  brain: Brain,
   check: Check,
   chevronDown: ChevronsUpDown,
   circle: Circle,
-  close: X,
+  close: X, // X is now imported
   copy: Copy,
-  creditCard: CreditCard, // Added
+  creditCard: CreditCard,
   dark: Moon,
-  dollarSign: DollarSign, // Added
+  dollarSign: DollarSign,
   edit: Edit,
   externalLink: ExternalLink,
   file: File,
   help: HelpCircle,
   home: Home,
-  info: Info, // Added
+  info: Info,
   light: Sun,
+  listChecks: ListChecks,
   loader: Loader2,
   mail: Mail,
   messageSquare: MessageSquare,
-  piggyBank: PiggyBank, // Added
+  piggyBank: PiggyBank,
   plus: Plus,
   plusCircle: PlusCircle,
   search: Search,
@@ -31,7 +34,9 @@ const Icons = {
   shield: Shield,
   spinner: Loader2,
   trash: Trash,
+  trendingUp: TrendingUp,
   user: User,
+  wallet: Wallet,
   workflow: Workflow,
 };
 

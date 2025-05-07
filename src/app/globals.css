@@ -2,10 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
-
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -91,6 +87,8 @@ body {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    background-image: linear-gradient(to bottom right, hsl(var(--background)), hsl(var(--muted)));
+    min-height: 100vh;
   }
 }

@@ -4,7 +4,8 @@
  * @fileOverview AI-powered finance chatbot flow.
  *
  * This file defines a Genkit flow that acts as a chatbot assistant,
- * answering user questions about their financial data (income, expenses).
+ * answering user questions about their financial data (income, expenses)
+ * and providing general information on basic financial concepts.
  *
  * - financeChatbot - The main function to interact with the chatbot.
  * - FinanceChatbotInput - The input type.
@@ -25,7 +26,7 @@ const ExpenseSchema = z.object({
 });
 
 const FinanceChatbotInputSchema = z.object({
-  userQuery: z.string().describe('The user\'s question or command to the chatbot (e.g., "How much did I spend on food last week?", "What was my biggest expense in May?", "Suggest ways to save on transportation.").'),
+  userQuery: z.string().describe('The user\'s question or command to the chatbot (e.g., "How much did I spend on food last week?", "What was my biggest expense in May?", "Suggest ways to save on transportation.", "What is an SIP?").'),
   // Provide relevant context for the chatbot
   income: z.number().nullable().describe('The user\'s current monthly income (if available).'),
   expenses: z.array(ExpenseSchema).describe('A list of the user\'s expenses to provide context for answering questions.'),
@@ -87,6 +88,16 @@ Conversation History:
 User Query: {{{userQuery}}}
 
 Based on the context above, provide a direct answer to the user's query. If the information needed is not available in the context, state that clearly. Do not make up information. If asked for suggestions (like saving money), provide 1-2 actionable tips relevant to the user's spending if possible based on their data.
+
+If the user asks about general financial concepts like SIP (Systematic Investment Plan), you can provide a brief, general explanation of what it is.
+However, you MUST state that you cannot provide specific financial advice, recommend products, or give details on current banking options.
+Your primary function is to answer questions based on the user's provided income and expense data.
+
+Example of explaining SIP if asked "What is an SIP?":
+"A Systematic Investment Plan (SIP) is a method of investing a fixed sum of money regularly, typically monthly, into mutual funds. It promotes disciplined investing and can help average out the cost of your investments over time through rupee cost averaging. Please remember, I cannot provide specific investment advice or recommend particular SIPs or banking products. My main role is to help you with your recorded income and expenses."
+
+If the user asks for banking options or specific investment advice, respond with:
+"Sorry, I am unable to provide information on specific banking options or investment advice. I am designed to answer questions based only on your income and expense data."
 `,
 });
 
@@ -115,3 +126,4 @@ const financeChatbotFlow = ai.defineFlow<
     }
   }
 );
+

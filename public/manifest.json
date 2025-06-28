@@ -1,0 +1,22 @@
+{
+  "name": "TrackWise: AI-Powered Spending Tracker",
+  "short_name": "TrackWise",
+  "description": "An intelligent web app for personal finance management using AI for expense tracking and insights.",
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0F8F8F",
+  "orientation": "portrait"
+}

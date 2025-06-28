@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SpendingForm } from '@/components/spending-form';
 import { SpendingSummary } from '@/components/spending-summary';
 import { SpendingPatterns } from '@/components/spending-patterns';
@@ -9,11 +9,46 @@ import { BudgetPrediction } from '@/components/budget-prediction';
 import { FinanceChatbot } from '@/components/finance-chatbot';
 import type { Expense } from "@/types/expense";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Wallet, ListChecks, TrendingUp, Brain, Bot } from "lucide-react"; // Import icons
+import { Wallet, ListChecks, TrendingUp, Brain, Bot, Download } from "lucide-react"; // Import icons
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
-  const [income, setIncome] = useState<number | null>(null);
+  const [income, setIncome] = useState<number | null>(10000);
   const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [installPrompt, setInstallPrompt] = useState<any>(null);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e: Event) => {
+      // Prevent the mini-infobar from appearing on mobile
+      e.preventDefault();
+      // Stash the event so it can be triggered later.
+      setInstallPrompt(e);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!installPrompt) {
+      return;
+    }
+    // Show the install prompt
+    await installPrompt.prompt();
+    // Wait for the user to respond to the prompt
+    const { outcome } = await installPrompt.userChoice;
+    if (outcome === 'accepted') {
+      console.log('User accepted the install prompt');
+    } else {
+      console.log('User dismissed the install prompt');
+    }
+    // We've used the prompt, and can't use it again, so clear it.
+    setInstallPrompt(null);
+  };
+
 
   const handleAddExpense = (newExpense: Omit<Expense, 'id' | 'date'> & { id?: string; date?: Date }) => {
     const expenseToAdd: Expense = {
@@ -52,6 +87,12 @@ export default function Home() {
           <h1 className="text-4xl font-bold text-primary">TrackWise</h1>
         </div>
         <p className="text-muted-foreground">Your AI-Powered Spending Tracker</p>
+        {installPrompt && (
+          <Button onClick={handleInstallClick} className="mt-4">
+            <Download className="mr-2 h-4 w-4" />
+            Add to Home Screen
+          </Button>
+        )}
       </header>
 
       {/* Input Section */}

@@ -1,6 +1,6 @@
 # TrackWise: Your AI-Powered Spending Tracker
 
-TrackWise is a Next.js web application designed to help users manage their personal finances with the power of AI.
+TrackWise is a Typescript web application designed to help users manage their personal finances with the power of AI.
 
 ## Aim of the Project
 
